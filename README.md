@@ -1,0 +1,1 @@
+Build: gcc loyalty.c
