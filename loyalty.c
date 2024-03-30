@@ -6,6 +6,9 @@
 #include <string.h>
 #include <ctype.h>
 
+// max cmd length
+static MAX = 35;
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         printf("invalid input/output args");
@@ -25,12 +28,39 @@ int main(int argc, char *argv[]) {
         }
 
         // first line of input should be a count of how many commands are being inputted
-        int commandCount;
-        fscanf(inFile, " %d", &commandCount);
+        int cmdCount;
+        fscanf(inFile, " %d", &cmdCount);
         
         // execute command loop this many times
-        for(int x = 0; x < commandCount; x++) {
+        for(int x = 0; x < cmdCount; x++) {
 
+            // put the next line into a string
+            char cmd[MAX];
+            fgets(cmd, MAX, inFile);
+
+            // first token will always be the type of command
+            char* cmdType = strtok(cmd, " ");
+            
+            // add command called
+            if (strcmp(cmdType, "add") == 0) {
+                
+            }
+            // sub command called
+            if (strcmp(cmdType, "sub") == 0) {
+                
+            }
+            // del command called
+            if (strcmp(cmdType, "del") == 0) {
+                
+            }
+            // search command called
+            if (strcmp(cmdType, "search") == 0) {
+                
+            }
+            // count_smaller command called
+            if (strcmp(cmdType, "count_smaller") == 0) {
+                
+            }
         }
     }
 }
