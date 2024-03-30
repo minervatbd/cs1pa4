@@ -24,6 +24,13 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
+        // first line of input should be a count of how many commands are being inputted
+        int commandCount;
+        fscanf(inFile, " %d", &commandCount);
         
+        // execute command loop this many times
+        for(int x = 0; x < commandCount; x++) {
+
+        }
     }
 }
