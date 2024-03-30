@@ -15,10 +15,12 @@ int main(int argc, char *argv[]) {
 
         // open input file
         FILE* inFile = fopen(argv[1],"r");
+        // create or overwrite output file
+        FILE* outFile = fopen(argv[2],"w");
 
-        // make sure the file exists
-        if (inFile == NULL) {
-            printf("invalid input arg");
+        // make sure the files exist
+        if (inFile == NULL || outFile == NULL) {
+            printf("invalid input/output arg");
             return -1;
         }
 
