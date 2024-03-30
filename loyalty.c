@@ -7,7 +7,23 @@
 #include <ctype.h>
 
 // max cmd length
-static MAX = 35;
+#define CMDLEN 35
+// max name length
+#define MAXLEN 19
+
+// customer struct
+typedef struct customer {
+char name[MAXLEN+1];
+int points;
+} customer;
+
+// tree node struct
+typedef struct treenode {
+customer* cPtr;
+int size;
+struct treenode* left;
+struct treenode* right;
+} treenode;
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -35,8 +51,8 @@ int main(int argc, char *argv[]) {
         for(int x = 0; x < cmdCount; x++) {
 
             // put the next line into a string
-            char cmd[MAX];
-            fgets(cmd, MAX, inFile);
+            char cmd[CMDLEN];
+            fgets(cmd, CMDLEN, inFile);
 
             // first token will always be the type of command
             char* cmdType = strtok(cmd, " ");
