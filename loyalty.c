@@ -73,17 +73,22 @@ int main(int argc, char *argv[]) {
             
             // add command called
             if (strcmp(token, "add") == 0) {
+                // finish tokenizing the command
                 char* name = strtok_r(rest, " ", &rest);
                 int points = atoi(strtok_r(rest, " ", &rest));
-        
+
+                // search for the name in the tree
                 treenode* temp = Search(root, name);
+                // if the search comes up empty, time to insert it
                 if (temp == NULL) temp = Insert(root, name);
 
-                printf("%d\n", temp->cPtr->points);
+                // if the root is null, meaning the tree is empty, simply root it at the current node being inserted
+                if (root == NULL) root = temp;
 
-
+                // add points
                 temp->cPtr->points += points;
-
+                
+                // output
                 fprintf(outFile, "%s %d\n", temp->cPtr->name, temp->cPtr->points);
 
             }
@@ -176,5 +181,5 @@ treenode* Search(treenode* root, char* name) {
     else if (cmp > 0) Search(root->right, name);
 
     // if the two are equal, a match has been found
-    else return root;
+    else if (cmp == 0) return root;
 }
