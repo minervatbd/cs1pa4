@@ -67,15 +67,20 @@ int main(int argc, char *argv[]) {
             fgets(cmd, CMDLEN, inFile);
 
             // first token will always be the type of command
-            char* cmdType = strtok(cmd, " ");
+            char* token;
+            char* rest = cmd;
+            token = strtok_r(rest, " ", &rest);
             
             // add command called
-            if (strcmp(cmdType, "add") == 0) {
-                char name[MAXLEN] = strtok(NULL, " ");
-                int points = atoi(strtok(NULL, " "));
-
+            if (strcmp(token, "add") == 0) {
+                char* name = strtok_r(rest, " ", &rest);
+                int points = atoi(strtok_r(rest, " ", &rest));
+        
                 treenode* temp = Search(root, name);
                 if (temp == NULL) temp = Insert(root, name);
+
+                printf("%d\n", temp->cPtr->points);
+
 
                 temp->cPtr->points += points;
 
@@ -83,19 +88,19 @@ int main(int argc, char *argv[]) {
 
             }
             // sub command called
-            if (strcmp(cmdType, "sub") == 0) {
+            if (strcmp(token, "sub") == 0) {
                 
             }
             // del command called
-            if (strcmp(cmdType, "del") == 0) {
+            if (strcmp(token, "del") == 0) {
                 
             }
             // search command called
-            if (strcmp(cmdType, "search") == 0) {
+            if (strcmp(token, "search") == 0) {
                 
             }
             // count_smaller command called
-            if (strcmp(cmdType, "count_smaller") == 0) {
+            if (strcmp(token, "count_smaller") == 0) {
                 
             }
         }
@@ -140,7 +145,7 @@ treenode* Insert(treenode* root, char* name) {
             return root->left;
         }
         
-        else insert(root->left, name);
+        else Insert(root->left, name);
 
     }
 
@@ -152,7 +157,7 @@ treenode* Insert(treenode* root, char* name) {
             return root->right;
         }
         
-        else insert(root->right, name);
+        else Insert(root->right, name);
     }
 }
 
