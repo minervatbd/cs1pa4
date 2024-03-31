@@ -94,7 +94,26 @@ int main(int argc, char *argv[]) {
             }
             // sub command called
             if (strcmp(token, "sub") == 0) {
-                
+                // finish tokenizing the command
+                char* name = strtok_r(rest, " ", &rest);
+                int points = atoi(strtok_r(rest, " ", &rest));
+
+                // search for the name in the tree
+                treenode* temp = Search(root, name);
+                // if search was empty, print name not found output
+                if (temp == NULL) fprintf("%s not found\n", name);
+                // otherwise, subtract from points
+                else {
+                    // if the points being subtracted exceeds the customer's current total points, just set it to zero
+                    if (temp->cPtr->points <= points) temp->cPtr->points = 0;
+
+                    // otherwise, just subtract normally
+                    else temp->cPtr->points -= points;
+
+                    // output
+                    fprintf(outFile, "%s %d\n", temp->cPtr->name, temp->cPtr->points);
+
+                }
             }
             // del command called
             if (strcmp(token, "del") == 0) {
