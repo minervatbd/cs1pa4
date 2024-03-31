@@ -25,9 +25,6 @@ struct treenode* left;
 struct treenode* right;
 } treenode;
 
-// takes two node pointers and compares the name strings
-int NodeCompare(treenode* a, treenode* b);
-
 // node creation function
 treenode* CreateNode(char* name);
 
@@ -96,16 +93,6 @@ int main(int argc, char *argv[]) {
     }
 }
 
-// takes two node pointers and compares the name strings
-int NodeCompare(treenode* a, treenode* b) {
-
-    char* aName = a->cPtr->name; // hopefully this works right
-    char* bName = b->cPtr->name;
-
-    return strcmp(aName, bName);
-
-}
-
 // node creation function
 treenode* CreateNode(char* name) {
 
@@ -122,12 +109,54 @@ treenode* CreateNode(char* name) {
 
 }
 
-// bst insertion function, returns root
-treenode* Insert(treenode* root, char* name) { 
+// bst insertion function
+treenode* Insert(treenode* root, char* name) {
+    
+    // terminating condition that shouldnt ever actually be called since it will eventually find a place for the node but just in case
+    if (root == NULL) return NULL;
 
+    root->size += 1;
+
+    int cmp = strcmp(root->cPtr->name, name);
+
+    // if the sought name comes after the current node lexographically, search the left node next
+    if (cmp < 0) {
+
+        if (root->left == NULL) {
+            root->left = CreateNode(name);
+            return root->left;
+        }
+        
+        else insert(root->left, name);
+
+    }
+
+    // if it comes before, search the right node
+    else if (cmp > 0) {
+
+        if (root->right == NULL) {
+            root->right = CreateNode(name);
+            return root->right;
+        }
+        
+        else insert(root->right, name);
+    }
 }
 
 // search function, goes thru tree from root 
 treenode* Search(treenode* root, char* name) {
 
+    // terminating condition
+    if (root == NULL) return NULL;
+
+    int cmp = strcmp(root->cPtr->name, name);
+
+    // if the sought name comes after the current node lexographically, search the left node next
+    if (cmp < 0) Search(root->left, name);
+
+    // if it comes before, search the right node
+    else if (cmp > 0) Search(root->right, name);
+
+    // if the two are equal, a match has been found
+    else return root;
 }
