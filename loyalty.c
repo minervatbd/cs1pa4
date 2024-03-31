@@ -236,9 +236,11 @@ int hasOnlyRightChild(treenode* node) {
 
 treenode* parent(treenode* root, treenode* node) {
     
+    // neither of these cases have parents
     if (root == NULL || root == node)
         return NULL;
     
+    // terminating condition for finding the parent of the sought node
     else if (root->left == node || root->right == node)
         return root;
     
@@ -255,4 +257,11 @@ treenode* parent(treenode* root, treenode* node) {
 
 treenode* maxVal(treenode* root) {
     
+    // if a right child exists, keep searching from there
+    if (root->right != NULL)
+        maxVal(root->right);
+    
+    // otherwise, root is maxval
+    else
+        return root;
 }
