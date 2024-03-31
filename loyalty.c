@@ -170,8 +170,8 @@ treenode* Insert(treenode* root, char* name) {
 
     int cmp = strcmp(root->cPtr->name, name);
 
-    // if the sought name comes after the current node lexographically, search the left node next
-    if (cmp < 0) {
+    // if the sought name comes before the current node lexographically, search the left node next
+    if (cmp > 0) {
 
         if (root->left == NULL) {
             root->left = CreateNode(name);
@@ -182,8 +182,8 @@ treenode* Insert(treenode* root, char* name) {
 
     }
 
-    // if it comes before, search the right node
-    else if (cmp > 0) {
+    // if it comes after, search the right node
+    else if (cmp < 0) {
 
         if (root->right == NULL) {
             root->right = CreateNode(name);
@@ -202,11 +202,11 @@ treenode* Search(treenode* root, char* name) {
 
     int cmp = strcmp(root->cPtr->name, name);
 
-    // if the sought name comes after the current node lexographically, search the left node next
-    if (cmp < 0) Search(root->left, name);
+    // if the sought name comes before the current node lexographically, search the left node next
+    if (cmp < 0) Search(root->right, name);
 
-    // if it comes before, search the right node
-    else if (cmp > 0) Search(root->right, name);
+    // if it comes after, search the right node
+    else if (cmp > 0) Search(root->left, name);
 
     // if the two are equal, a match has been found
     else if (cmp == 0) return root;
@@ -244,13 +244,13 @@ treenode* parent(treenode* root, treenode* node) {
     
     int cmp = strcmp(root->cPtr->name, node->cPtr->name);
     
-    // if the sought node comes after the current root lexographically, search the left node next
+    // if the sought node comes before the current root lexographically, search the left node next
     if (cmp < 0)
-        parent(root->left, node);
-
-    // if it comes before, search the right node
-    else if (cmp > 0)
         parent(root->right, node);
+
+    // if it comes after, search the right node
+    else if (cmp > 0)
+        parent(root->left, node);
 }
 
 treenode* maxVal(treenode* root) {
