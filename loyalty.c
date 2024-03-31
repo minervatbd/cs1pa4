@@ -32,7 +32,7 @@ int NodeCompare(treenode* a, treenode* b);
 treenode* CreateNode(char* name);
 
 // bst insertion function, returns root
-treenode* Insert(treenode* root, treenode* node);
+treenode* Insert(treenode* root, char* name);
 
 // search function, goes thru tree from root 
 treenode* Search(treenode* root, char* name);
@@ -54,6 +54,9 @@ int main(int argc, char *argv[]) {
             printf("invalid input/output arg");
             return -1;
         }
+
+        // null root node pointer to start off the tree
+        treenode* root = NULL;
 
         // first line of input should be a count of how many commands are being inputted
         int cmdCount;
@@ -106,10 +109,21 @@ int NodeCompare(treenode* a, treenode* b) {
 // node creation function
 treenode* CreateNode(char* name) {
 
+    customer* c = (customer*)malloc(sizeof(customer));
+    strcpy(c->name, name);
+
+    treenode* node = (treenode*)malloc(sizeof(treenode));
+    node->cPtr = c;
+    node->left = NULL;
+    node->right = NULL;
+    node->size = 1;
+
+    return node;
+
 }
 
 // bst insertion function, returns root
-treenode* Insert(treenode* root, treenode* node) { 
+treenode* Insert(treenode* root, char* name) { 
 
 }
 
