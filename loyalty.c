@@ -159,7 +159,36 @@ int main(int argc, char *argv[]) {
             }
             // search command called
             if (strcmp(token, "search") == 0) {
-                
+
+                // finish tokenizing the command
+                char* name = strtok_r(rest, " \n", &rest);
+                int points = NULL;
+
+                treenode* temp = root;
+
+                int depth_counter = -1; // starts at -1 cuz of a quick fix
+
+                while (temp != NULL) {
+                    depth_counter++;
+
+                    int cmp = strcmp(temp->cPtr->name, name);
+
+                    // if sought name comes before the node's name, search to the left
+                    if (cmp > 0)
+                        temp = temp->left;
+                    // if it comes after, search to right
+                    else if (cmp < 0)
+                        temp = temp->right;
+                    // if its equal, we found a match
+                    else {
+                        points = temp->cPtr->points;
+                        fprintf(outFile, "%s %d %d\n", name, points, depth_counter);
+                        temp = NULL;
+                    }
+                }
+                // points should only get assigned if the node is found, so this should be sufficient for these cases
+                if (points == NULL)
+                    fprintf(outFile, "%s not found\n", name);
             }
             // count_smaller command called
             if (strcmp(token, "count_smaller") == 0) {
