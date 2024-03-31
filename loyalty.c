@@ -34,6 +34,15 @@ treenode* Insert(treenode* root, char* name);
 // search function, goes thru tree from root 
 treenode* Search(treenode* root, char* name);
 
+// functions for deletion
+int isLeaf(treenode* node);
+int hasOnlyLeftChild(treenode* node);
+int hasOnlyRightChild(treenode* node);
+treenode* parent(treenode* root, treenode* node);
+treenode* maxVal(treenode* root);
+// treenode* minVal(treenode* root); 
+// only going to use maxVal in this context
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         printf("invalid input/output args");
@@ -201,4 +210,49 @@ treenode* Search(treenode* root, char* name) {
 
     // if the two are equal, a match has been found
     else if (cmp == 0) return root;
+}
+
+// deletion utility functions
+int isLeaf(treenode* node) {
+    if (node->left == NULL && node->right == NULL)
+        return 1;
+    else
+        return 0;
+}
+
+int hasOnlyLeftChild(treenode* node) {
+    if (node->left != NULL && node->right == NULL)
+        return 1;
+    else
+        return 0;
+}
+
+int hasOnlyRightChild(treenode* node) {
+    if (node->left == NULL && node->right != NULL)
+        return 1;
+    else
+        return 0;
+}
+
+treenode* parent(treenode* root, treenode* node) {
+    
+    if (root == NULL || root == node)
+        return NULL;
+    
+    else if (root->left == node || root->right == node)
+        return root;
+    
+    int cmp = strcmp(root->cPtr->name, node->cPtr->name);
+    
+    // if the sought node comes after the current root lexographically, search the left node next
+    if (cmp < 0)
+        parent(root->left, node);
+
+    // if it comes before, search the right node
+    else if (cmp > 0)
+        parent(root->right, node);
+}
+
+treenode* maxVal(treenode* root) {
+    
 }
