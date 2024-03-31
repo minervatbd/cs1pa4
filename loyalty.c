@@ -25,6 +25,18 @@ struct treenode* left;
 struct treenode* right;
 } treenode;
 
+// takes two node pointers and compares the name strings
+int NodeCompare(treenode* a, treenode* b);
+
+// node creation function
+treenode* CreateNode(char* name);
+
+// bst insertion function, returns root
+treenode* Insert(treenode* root, treenode* node);
+
+// search function, goes thru tree from root 
+treenode* Search(treenode* root, char* name);
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         printf("invalid input/output args");
@@ -79,4 +91,29 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+}
+
+// takes two node pointers and compares the name strings
+int NodeCompare(treenode* a, treenode* b) {
+
+    char* aName = a->cPtr->name; // hopefully this works right
+    char* bName = b->cPtr->name;
+
+    return strcmp(aName, bName);
+
+}
+
+// node creation function
+treenode* CreateNode(char* name) {
+
+}
+
+// bst insertion function, returns root
+treenode* Insert(treenode* root, treenode* node) { 
+
+}
+
+// search function, goes thru tree from root 
+treenode* Search(treenode* root, char* name) {
+
 }
