@@ -46,6 +46,8 @@ treenode* maxVal(treenode* root);
 // treenode* minVal(treenode* root); 
 // only going to use maxVal in this context
 
+void inorder(treenode *current_ptr);
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         printf("invalid input/output args");
@@ -161,6 +163,7 @@ int main(int argc, char *argv[]) {
                 
             }
         }
+        inorder(root);
     }
 }
 
@@ -260,23 +263,29 @@ treenode* Delete(treenode* root, treenode* node) {
     // if it has two children
     else {
         replacement = maxVal(node->left);
+        replacement->right = node->right;
+        //there are two possibilities. in one, the max value of the left subtree is simply the root of the left subtree. in this case, we can leave its left pointer as is, and only replace the right pointer. otherwise, the replacement will be a right leaf node, in which case, we will need to add the left pointer of the original node as well, and also set it's original parent pointer to null.
+        if (replacement != node->left) {
+            replacement->left = node->left;
+            treenode* repParent = findParent(node, replacement);
+            repParent->right = NULL;
+        }
     }
 
     if (parent != NULL) {
-            int cmp = strcmp(parent->left->cPtr->name, node->cPtr->name); // returns 0 iff the node is a left child of the parent
 
-            if (cmp == 0)
-                parent->left = replacement;
-            
-            else
-                parent->right = replacement;
+        if (parent->left == node)
+            parent->left = replacement;
+        
+        else
+            parent->right = replacement;
 
-        }
+    }
 
-        // now, free this stuff
-        free(node->cPtr);
-        free(node);
-        return replacement;
+    // now, free this stuff
+    free(node->cPtr);
+    free(node);
+    return replacement;
 }
 
 // deletion utility functions
@@ -331,4 +340,13 @@ treenode* maxVal(treenode* root) {
     // otherwise, root is maxval
     else
         return root;
+}
+
+void inorder(treenode *current_ptr) {
+// Only traverse the node if it's not null.
+if (current_ptr != NULL) {
+inorder(current_ptr->left); // Go Left.
+printf("%s\n", current_ptr->cPtr->name); // Print the root.
+inorder(current_ptr->right); // Go Right.
+}
 }
