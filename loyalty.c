@@ -43,6 +43,9 @@ int hasOnlyLeftChild(treenode* node);
 int hasOnlyRightChild(treenode* node);
 treenode* findParent(treenode* root, treenode* node);
 treenode* maxVal(treenode* root);
+
+// need this function to decrement size when deleting
+void Decrement(treenode* root, treenode* node);
 // treenode* minVal(treenode* root); 
 // only going to use maxVal in this context
 
@@ -163,7 +166,7 @@ int main(int argc, char *argv[]) {
                 
             }
         }
-        inorder(root);
+        //inorder(root);
     }
 }
 
@@ -250,19 +253,31 @@ treenode* Delete(treenode* root, treenode* node) {
     treenode* replacement;
 
     // if the target node is a leaf, ez
-    if (isLeaf(node))
+    if (isLeaf(node)) {
         replacement = NULL;
+        Decrement(root, node);
+    }
 
     // if it has one child
-    else if (hasOnlyLeftChild(node))
+    else if (hasOnlyLeftChild(node)) {
         replacement = node->left;
+        Decrement(root, replacement);
+        replacement->size = node->size;
+    }
 
-    else if (hasOnlyRightChild(node)) 
+    else if (hasOnlyRightChild(node)) {
         replacement = node->right;
+        Decrement(root, replacement);
+        replacement->size = node->size;
+    }
     
     // if it has two children
     else {
         replacement = maxVal(node->left);
+
+        Decrement(root, replacement);
+        replacement->size = node->size;
+
         replacement->right = node->right;
         //there are two possibilities. in one, the max value of the left subtree is simply the root of the left subtree. in this case, we can leave its left pointer as is, and only replace the right pointer. otherwise, the replacement will be a right leaf node, in which case, we will need to add the left pointer of the original node as well, and also set it's original parent pointer to null.
         if (replacement != node->left) {
@@ -270,6 +285,7 @@ treenode* Delete(treenode* root, treenode* node) {
             treenode* repParent = findParent(node, replacement);
             repParent->right = NULL;
         }
+        
     }
 
     if (parent != NULL) {
@@ -342,11 +358,34 @@ treenode* maxVal(treenode* root) {
         return root;
 }
 
-void inorder(treenode *current_ptr) {
+void Decrement(treenode* root, treenode* node) {
+    
+    root->size--;
+
+    if (root == NULL || root == node)
+        return;
+
+    int cmp = strcmp(root->cPtr->name, node->cPtr->name);
+
+    // if the sought name comes before the current node lexographically, search the left node next
+    if (cmp < 0)
+        Decrement(root->right, node);
+
+    // if it comes after, search the right node
+    else if (cmp > 0)
+        Decrement(root->left, node);
+
+    // if the two are equal, a match has been found
+    else if (cmp == 0)
+        return;
+}
+
+
+void inorder(treenode* current_ptr) {
 // Only traverse the node if it's not null.
 if (current_ptr != NULL) {
 inorder(current_ptr->left); // Go Left.
-printf("%s\n", current_ptr->cPtr->name); // Print the root.
+printf("%s size: %d\n", current_ptr->cPtr->name, current_ptr->size); // Print the root.
 inorder(current_ptr->right); // Go Right.
 }
 }
