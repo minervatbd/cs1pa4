@@ -71,7 +71,16 @@ int main(int argc, char *argv[]) {
             
             // add command called
             if (strcmp(cmdType, "add") == 0) {
-                
+                char name[MAXLEN] = strtok(NULL, " ");
+                int points = atoi(strtok(NULL, " "));
+
+                treenode* temp = Search(root, name);
+                if (temp == NULL) temp = Insert(root, name);
+
+                temp->cPtr->points += points;
+
+                fprintf(outFile, "%s %d\n", temp->cPtr->name, temp->cPtr->points);
+
             }
             // sub command called
             if (strcmp(cmdType, "sub") == 0) {
@@ -98,6 +107,7 @@ treenode* CreateNode(char* name) {
 
     customer* c = (customer*)malloc(sizeof(customer));
     strcpy(c->name, name);
+    c->points = 0;
 
     treenode* node = (treenode*)malloc(sizeof(treenode));
     node->cPtr = c;
@@ -112,10 +122,13 @@ treenode* CreateNode(char* name) {
 // bst insertion function
 treenode* Insert(treenode* root, char* name) {
     
-    // terminating condition that shouldnt ever actually be called since it will eventually find a place for the node but just in case
-    if (root == NULL) return NULL;
+    // this should only get called if the bst was empty,
+    if (root == NULL) {
+        root = CreateNode(name);
+        return root;
+    }
 
-    root->size += 1;
+    root->size++; // since the node will definitely be inserted below this current root, might as well increment it to save us a headache
 
     int cmp = strcmp(root->cPtr->name, name);
 
