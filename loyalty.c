@@ -34,11 +34,14 @@ treenode* Insert(treenode* root, char* name);
 // search function, goes thru tree from root 
 treenode* Search(treenode* root, char* name);
 
+// delete function
+treenode* Delete(treenode* root, treenode* node);
+
 // functions for deletion
 int isLeaf(treenode* node);
 int hasOnlyLeftChild(treenode* node);
 int hasOnlyRightChild(treenode* node);
-treenode* parent(treenode* root, treenode* node);
+treenode* findParent(treenode* root, treenode* node);
 treenode* maxVal(treenode* root);
 // treenode* minVal(treenode* root); 
 // only going to use maxVal in this context
@@ -132,6 +135,22 @@ int main(int argc, char *argv[]) {
             // del command called
             if (strcmp(token, "del") == 0) {
                 
+                // finish tokenizing the command
+                char* name = strtok_r(rest, " \n", &rest);
+
+                treenode* temp = Search(root, name);
+
+                if (temp == NULL)
+                    fprintf(outFile, "%s not found\n", name);
+                
+                else {
+                    if (root == temp)
+                        root = Delete(root, temp);
+                    else
+                        Delete(root, temp);
+                    
+                    fprintf(outFile, "%s deleted\n", name);
+                }
             }
             // search command called
             if (strcmp(token, "search") == 0) {
@@ -221,6 +240,45 @@ treenode* Search(treenode* root, char* name) {
         return root;
 }
 
+// deletion function
+treenode* Delete(treenode* root, treenode* node) {
+    
+    treenode* parent = findParent(root, node);
+    treenode* replacement;
+
+    // if the target node is a leaf, ez
+    if (isLeaf(node))
+        replacement = NULL;
+
+    // if it has one child
+    else if (hasOnlyLeftChild(node))
+        replacement = node->left;
+
+    else if (hasOnlyRightChild(node)) 
+        replacement = node->right;
+    
+    // if it has two children
+    else {
+        replacement = maxVal(node->left);
+    }
+
+    if (parent != NULL) {
+            int cmp = strcmp(parent->left->cPtr->name, node->cPtr->name); // returns 0 iff the node is a left child of the parent
+
+            if (cmp == 0)
+                parent->left = replacement;
+            
+            else
+                parent->right = replacement;
+
+        }
+
+        // now, free this stuff
+        free(node->cPtr);
+        free(node);
+        return replacement;
+}
+
 // deletion utility functions
 int isLeaf(treenode* node) {
     if (node->left == NULL && node->right == NULL)
@@ -243,7 +301,7 @@ int hasOnlyRightChild(treenode* node) {
         return 0;
 }
 
-treenode* parent(treenode* root, treenode* node) {
+treenode* findParent(treenode* root, treenode* node) {
     
     // neither of these cases have parents
     if (root == NULL || root == node)
@@ -257,11 +315,11 @@ treenode* parent(treenode* root, treenode* node) {
     
     // if the sought node comes before the current root lexographically, search the left node next
     if (cmp < 0)
-        parent(root->right, node);
+        findParent(root->right, node);
 
     // if it comes after, search the right node
     else if (cmp > 0)
-        parent(root->left, node);
+        findParent(root->left, node);
 }
 
 treenode* maxVal(treenode* root) {
