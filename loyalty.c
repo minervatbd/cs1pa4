@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
         fscanf(inFile, " %d", &cmdCount);
         
         // execute command loop this many times
-        for(int x = 0; x < cmdCount; x++) {
+        for(int x = 0; x <= cmdCount; x++) {
 
             // put the next line into a string
             char cmd[CMDLEN];
