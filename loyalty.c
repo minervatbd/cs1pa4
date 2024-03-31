@@ -89,10 +89,12 @@ int main(int argc, char *argv[]) {
                 // search for the name in the tree
                 treenode* temp = Search(root, name);
                 // if the search comes up empty, time to insert it
-                if (temp == NULL) temp = Insert(root, name);
+                if (temp == NULL)
+                    temp = Insert(root, name);
 
                 // if the root is null, meaning the tree is empty, simply root it at the current node being inserted
-                if (root == NULL) root = temp;
+                if (root == NULL)
+                    root = temp;
 
                 // add points
                 temp->cPtr->points += points;
@@ -110,14 +112,17 @@ int main(int argc, char *argv[]) {
                 // search for the name in the tree
                 treenode* temp = Search(root, name);
                 // if search was empty, print name not found output
-                if (temp == NULL) fprintf(outFile, "%s not found\n", name);
+                if (temp == NULL)
+                    fprintf(outFile, "%s not found\n", name);
                 // otherwise, subtract from points
                 else {
                     // if the points being subtracted exceeds the customer's current total points, just set it to zero
-                    if (temp->cPtr->points <= points) temp->cPtr->points = 0;
+                    if (temp->cPtr->points <= points)
+                        temp->cPtr->points = 0;
 
                     // otherwise, just subtract normally
-                    else temp->cPtr->points -= points;
+                    else
+                        temp->cPtr->points -= points;
 
                     // output
                     fprintf(outFile, "%s %d\n", temp->cPtr->name, temp->cPtr->points);
@@ -198,18 +203,22 @@ treenode* Insert(treenode* root, char* name) {
 treenode* Search(treenode* root, char* name) {
 
     // terminating condition
-    if (root == NULL) return NULL;
+    if (root == NULL)
+        return NULL;
 
     int cmp = strcmp(root->cPtr->name, name);
 
     // if the sought name comes before the current node lexographically, search the left node next
-    if (cmp < 0) Search(root->right, name);
+    if (cmp < 0)
+        Search(root->right, name);
 
     // if it comes after, search the right node
-    else if (cmp > 0) Search(root->left, name);
+    else if (cmp > 0)
+        Search(root->left, name);
 
     // if the two are equal, a match has been found
-    else if (cmp == 0) return root;
+    else if (cmp == 0)
+        return root;
 }
 
 // deletion utility functions
