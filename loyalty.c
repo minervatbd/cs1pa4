@@ -52,6 +52,8 @@ void Decrement(treenode* root, treenode* node);
 // inorder parsing function for making the bst into an array
 void inorder(treenode* root, customer** cArray, int* index);
 
+void mergeSort(customer** cArray, int l, int r);
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         printf("invalid input/output args");
@@ -226,10 +228,19 @@ int main(int argc, char *argv[]) {
                 fprintf(outFile, "%d\n", smaller_count);
             }
         }
-        customer** cArray = (customer**)malloc(sizeof(customer*)*root->size);
+        // after command loop is done, put bst into array
+        int arraySize = root->size;
+        customer** cArray = (customer**)malloc(sizeof(customer*)*arraySize);
         int* o = malloc(sizeof(int));
         *o = 0;
         inorder(root, cArray, o);
+        mergeSort(cArray, 0, arraySize-1);
+        for (int x = 0; x < arraySize; x++) {
+            fprintf(outFile, "%s %d\n", cArray[x]->name, cArray[x]->points);
+            free(cArray[x]);
+        }
+        free(cArray);
+        free(o);
     }
 }
 
@@ -453,4 +464,76 @@ void inorder(treenode* root, customer** cArray, int* index) {
         inorder(root->right, cArray, index); // right subtree
         free(root);
     }
+}
+
+void mergeSort(customer** cArray, int l, int r)
+{
+	// terminating condition
+	if (l >= r) return;
+	else {
+
+		int mid = (l+r)/2; // midpoint
+
+		// recursive call;
+		mergeSort(cArray, l, mid);
+		mergeSort(cArray, mid+1, r);
+
+		// now we need to actually merge things
+		// lengths of temp arrays
+		int lSize = mid - l + 1;
+		int rSize = r - mid;
+
+		// temp arrays
+		customer** lArray = (customer**)malloc(lSize*sizeof(customer*));
+		customer** rArray = (customer**)malloc(rSize*sizeof(customer*));
+
+		// populate temp arrays
+		for (int x = 0; x < lSize; x++)
+			lArray[x] = cArray[l + x];
+		
+		for (int y = 0; y < rSize; y++)
+			rArray[y] = cArray[mid+1 + y];
+
+		// put data from temp arrays back into array
+		int m = 0, n = 0; // indexes for temp arrays
+		for (int p = l; p < r+1; p++) {
+			
+			// if we've already run out of entries in rArray but lArray still has some left
+			if (n >= rSize && m < lSize) {
+				cArray[p] = lArray[m];
+				m++;
+			}
+			// vice versa
+			else if (m >= lSize && n < rSize) {
+				cArray[p] = rArray[n];
+				n++;
+			}
+			// otherwise, compare the two and determine which to put first
+			else {
+
+				if (lArray[m]->points > rArray[n]->points) {
+					cArray[p] = lArray[m];
+					m++;
+				}
+				else if (lArray[m]->points < rArray[n]->points) {
+					cArray[p] = rArray[n];
+					n++;
+				}
+                else {
+                    int cmp = strcmp(lArray[m]->name, rArray[n]->name);
+                    if (cmp < 0) {
+                        cArray[p] = lArray[m];
+					    m++;
+                    }
+                    else if (cmp > 0) {
+                        cArray[p] = rArray[n];
+					    n++;
+                    }
+                }
+			}
+		}
+
+		free(lArray);
+		free(rArray);
+ 	}
 }
