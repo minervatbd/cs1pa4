@@ -49,7 +49,8 @@ void Decrement(treenode* root, treenode* node);
 // treenode* minVal(treenode* root); 
 // only going to use maxVal in this context
 
-void inorder(treenode *current_ptr);
+// inorder parsing function for making the bst into an array
+void inorder(treenode* root, customer** cArray, int* index);
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -192,10 +193,43 @@ int main(int argc, char *argv[]) {
             }
             // count_smaller command called
             if (strcmp(token, "count_smaller") == 0) {
-                
+
+                // finish tokenizing the command
+                char* name = strtok_r(rest, " \n", &rest);
+
+                treenode* temp = root;
+
+                int smaller_count = 0;
+
+                while (temp != NULL) {
+                    int cmp = strcmp(temp->cPtr->name, name);
+
+                    // the string is a match
+                    if (cmp == 0) {
+                        if (temp->left != NULL)
+                            smaller_count += temp->left->size;
+                        temp = NULL; // no need for further search
+                    }
+                    // if sought name comes before current node name
+                    else if (cmp > 0) {
+                        temp = temp->left;
+                    }
+                    // if sought name is after current node name
+                    else if (cmp < 0) {
+                        smaller_count++;
+                        if (temp->left != NULL)
+                            smaller_count += temp->left->size;
+                        temp = temp->right;
+                    }
+                }
+
+                fprintf(outFile, "%d\n", smaller_count);
             }
         }
-        //inorder(root);
+        customer** cArray = (customer**)malloc(sizeof(customer*)*root->size);
+        int* o = malloc(sizeof(int));
+        *o = 0;
+        inorder(root, cArray, o);
     }
 }
 
@@ -409,12 +443,14 @@ void Decrement(treenode* root, treenode* node) {
         return;
 }
 
-
-void inorder(treenode* current_ptr) {
-// Only traverse the node if it's not null.
-if (current_ptr != NULL) {
-inorder(current_ptr->left); // Go Left.
-printf("%s size: %d\n", current_ptr->cPtr->name, current_ptr->size); // Print the root.
-inorder(current_ptr->right); // Go Right.
-}
+// inorder parsing function for making the bst into an array
+void inorder(treenode* root, customer** cArray, int* index) {
+    // terminating condition
+    if (root != NULL) {
+        inorder(root->left, cArray, index); // left subtree
+        cArray[*index] = root->cPtr; // add root to array
+        (*index)++; // increment int pointer
+        inorder(root->right, cArray, index); // right subtree
+        free(root);
+    }
 }
